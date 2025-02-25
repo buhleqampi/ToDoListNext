@@ -1,6 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef, FC } from "react";
+import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
+
+
 
 interface Task {
   title: string;
@@ -127,11 +131,8 @@ const TodoApp: FC = () => {
           <strong>Due Date:</strong> {task.dueDate}
           <br />
           <strong>Timestamp:</strong> {task.timestamp}
-          <i onClick={() => delTask(index)} className="fa-solid fa-trash"></i>
-          <i
-            onClick={() => updateTask(index)}
-            className="fa-solid fa-pen-to-square"
-          ></i>
+          <i onClick={() => delTask(index)} className="fa-solid fa-trash"><MdDelete/></i>
+          <i onClick={() => updateTask(index)} className="fa-solid fa-pen-to-square"><FaEdit/></i>
         </li>
       ));
   };
