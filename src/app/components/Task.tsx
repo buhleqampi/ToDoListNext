@@ -41,7 +41,7 @@ const TodoApp: FC = () => {
             const newTasks = [...tasks, task];
             setTasks(newTasks);
             saveTasksToLocalStorage(newTasks);
-            if (titleInput.current) titleInput.current.value = '';
+            if (titleInput.current) titleInput.current.value = ''; 
             if (descriptionInput.current) descriptionInput.current.value = '';
             if (dueDateInput.current) dueDateInput.current.value = '';
             if (titleInput.current) titleInput.current.focus();
