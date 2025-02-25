@@ -3,9 +3,14 @@ import Task from '../app/components/Task'
 
 const page = () => {
   return (
-    <Task/>
+    <>
+    <h1 className="text-3xl font-bold underline">
+      Hello world!
+    </h1>
+    <Task />
+    </>
   )
 }
 
 export default page
-
+    

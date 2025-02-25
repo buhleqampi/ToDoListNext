@@ -1,10 +1,13 @@
 import type { Config } from "tailwindcss";
+const flowbite = require("flowbite-react/tailwind");
 
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "public/index.html",
+    flowbite.content(),
   ],
   theme: {
     extend: {
@@ -12,7 +15,16 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        'patrick-hand': [ '"Patrick Hand"', 'cursive'],
+      },
+      backgroundImage:{
+        'login-register': "url('/Assets/LoginRegister.jpg')",
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+    flowbite.plugin(),
+  ],
 } satisfies Config;
