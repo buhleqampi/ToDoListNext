@@ -19,7 +19,9 @@ const NavBar = () => {
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               Flowbite
             </span> */}
-            To Do List
+            <div className ="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+              To Do List
+              </div>
           </a>
           <button
             data-collapse-toggle="navbar-default"
