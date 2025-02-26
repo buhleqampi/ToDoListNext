@@ -3,16 +3,16 @@
 import React, { useState, useEffect, useRef } from "react";
 
 interface Task {
-  title: string;
+  name: string;
   description: string;
   dueDate: string;
-  timestamp: string;
+//   priority: string;
 }
 
 const TodoApp = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const titleInput = useRef<HTMLInputElement>(null);
+  const nameInput = useRef<HTMLInputElement>(null);
   const descriptionInput = useRef<HTMLInputElement>(null);
   const dueDateInput = useRef<HTMLInputElement>(null);
 
@@ -26,20 +26,21 @@ const TodoApp = () => {
   };
 
   const addTask = () => {
-    const titleValue = titleInput.current?.value.trim() ?? "";
+    const nameValue = nameInput.current?.value.trim() ?? "";
     const descriptionValue = descriptionInput.current?.value.trim() ?? "";
     const dueDateValue = dueDateInput.current?.value.trim() ?? "";
 
-    if (titleValue !== "") {
-      const timestamp = new Date().toLocaleString();
-      const task: Task = { title: titleValue, description: descriptionValue, dueDate: dueDateValue, timestamp };
+    if (nameValue !== "") {
+        
+      const task: Task = {
+          name: nameValue, description: descriptionValue, dueDate: dueDateValue };
       const newTasks = [...tasks, task];
       setTasks(newTasks);
       saveTasksToLocalStorage(newTasks);
-      if (titleInput.current) titleInput.current.value = "";
+      if (nameInput.current) nameInput.current.value = "";
       if (descriptionInput.current) descriptionInput.current.value = "";
       if (dueDateInput.current) dueDateInput.current.value = "";
-      if (titleInput.current) titleInput.current.focus();
+      if (nameInput.current) nameInput.current.focus();
     } else {
       alert("Please enter a task!");
     }
@@ -53,10 +54,10 @@ const TodoApp = () => {
 
   const updateTask = (index: number) => {
     const task = tasks[index];
-    const newTitle = prompt("Enter new title:", task.title);
+    const newName = prompt("Enter new title:", task.name);
     const newDescription = prompt("Enter new description:", task.description);
-    if (newTitle !== null && newDescription !== null) {
-      const updatedTask = { ...task, title: newTitle, description: newDescription };
+    if (newName !== null && newDescription !== null) {
+      const updatedTask = { ...task, title: newName, description: newDescription };
       const newTasks = tasks.map((t, i) => (i === index ? updatedTask : t));
       setTasks(newTasks);
       saveTasksToLocalStorage(newTasks);
@@ -64,7 +65,7 @@ const TodoApp = () => {
   };
 
   const filteredTasks = tasks.filter(task =>
-    task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    task.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     task.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -80,7 +81,7 @@ const TodoApp = () => {
       <input
         type="text"
         placeholder="Title"
-        ref={titleInput}
+        ref={nameInput}
         className="w-full p-2 mb-3 border rounded-sm focus:outline-hidden focus:ring-2 focus:ring-blue-400"
       />
       <input
@@ -111,10 +112,10 @@ const TodoApp = () => {
       <ul className="list-none p-0 mt-5">
         {filteredTasks.map((task, index) => (
           <li key={index} className="list-group-item">
-            <strong>Title:</strong> {task.title}<br />
+            <strong>Name:</strong> {task.name}<br />
             <strong>Description:</strong> {task.description}<br />
             <strong>Due Date:</strong> {task.dueDate}<br />
-            <strong>Timestamp:</strong> {task.timestamp}<br />
+            {/* <strong>Timestamp:</strong> {task.priority}<br /> */}
             <button onClick={() => delTask(index)} className="text-red-500 ml-2">Delete</button>
             <button onClick={() => updateTask(index)} className="text-blue-500 ml-2">Edit</button>
           </li>
