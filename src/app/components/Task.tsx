@@ -65,8 +65,8 @@ const TodoApp = () => {
   };
 
   const filteredTasks = tasks.filter(task =>
-    task.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    task.description.toLowerCase().includes(searchTerm.toLowerCase())
+    (task.name && task.name. toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (task.description && task.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
