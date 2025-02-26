@@ -1,10 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, FC } from "react";
-import { MdDelete } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
-
-
+import React, { useState, useEffect, useRef } from "react";
 
 interface Task {
   title: string;
@@ -13,17 +9,15 @@ interface Task {
   timestamp: string;
 }
 
-const TodoApp: FC = () => {
+const TodoApp = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const titleInput = useRef<HTMLInputElement>(null);
   const descriptionInput = useRef<HTMLInputElement>(null);
   const dueDateInput = useRef<HTMLInputElement>(null);
-  const newItem = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    const storedTasks = JSON.parse(
-      localStorage.getItem("tasks") || "[]"
-    ) as Task[];
+    const storedTasks = JSON.parse(localStorage.getItem("tasks") || "[]") as Task[];
     setTasks(storedTasks);
   }, []);
 
@@ -38,12 +32,7 @@ const TodoApp: FC = () => {
 
     if (titleValue !== "") {
       const timestamp = new Date().toLocaleString();
-      const task: Task = {
-        title: titleValue,
-        description: descriptionValue,
-        dueDate: dueDateValue,
-        timestamp: timestamp,
-      };
+      const task: Task = { title: titleValue, description: descriptionValue, dueDate: dueDateValue, timestamp };
       const newTasks = [...tasks, task];
       setTasks(newTasks);
       saveTasksToLocalStorage(newTasks);
@@ -67,79 +56,27 @@ const TodoApp: FC = () => {
     const newTitle = prompt("Enter new title:", task.title);
     const newDescription = prompt("Enter new description:", task.description);
     if (newTitle !== null && newDescription !== null) {
-      const updatedTask = {
-        ...task,
-        title: newTitle,
-        description: newDescription,
-      };
+      const updatedTask = { ...task, title: newTitle, description: newDescription };
       const newTasks = tasks.map((t, i) => (i === index ? updatedTask : t));
       setTasks(newTasks);
       saveTasksToLocalStorage(newTasks);
     }
   };
 
-  const deleteAllTasks = () => {
-    setTasks([]);
-    saveTasksToLocalStorage([]);
-  };
-
-  const searchTasks = (letter: string) => {
-    const filteredTasks = tasks.filter((task) => {
-      const title = task.title.toLowerCase();
-      const description = task.description.toLowerCase();
-      const searchLetter = letter.toLowerCase();
-      return (
-        title.startsWith(searchLetter) || description.startsWith(searchLetter)
-      );
-    });
-    renderFilteredTasks(filteredTasks);
-  };
-
-  const renderFilteredTasks = (filteredTasks: Task[]) => {
-    if (newItem.current) {
-      newItem.current.innerHTML = "";
-      filteredTasks
-        .slice()
-        .reverse()
-        .forEach((task, index) => {
-          const li = document.createElement("li");
-          li.className = "list-group-item";
-          li.innerHTML = `<strong>Title:</strong> ${task.title}<br>
-                <strong>Description:</strong> ${task.description}<br>
-                <strong>Timestamp:</strong> ${task.timestamp}
-                <i onclick="delTask(${tasks.indexOf(
-                  task
-                )})" class="fa-solid fa-trash"></i>
-                <i onclick="updateTask(${tasks.indexOf(
-                  task
-                )})" class="fa-solid fa-pen-to-square"></i>`;
-          newItem.current?.appendChild(li);
-        });
-    }
-  };
-
-  const renderTasks = () => {
-    return tasks
-      .slice()
-      .reverse()
-      .map((task, index) => (
-        <li key={index} className="list-group-item">
-          <strong>Title:</strong> {task.title}
-          <br />
-          <strong>Description:</strong> {task.description}
-          <br />
-          <strong>Due Date:</strong> {task.dueDate}
-          <br />
-          <strong>Timestamp:</strong> {task.timestamp}
-          <i onClick={() => delTask(index)} className="fa-solid fa-trash"><MdDelete/></i>
-          <i onClick={() => updateTask(index)} className="fa-solid fa-pen-to-square"><FaEdit/></i>
-        </li>
-      ));
-  };
+  const filteredTasks = tasks.filter(task =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    task.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="max-w-lg mx-auto mt-10 p-5 bg-white shadow-md rounded-lg font-patrick-hand backdrop-blur-xs bg-opacity-80">
       <h1 className="text-2xl font-bold text-center mb-5">Todo List</h1>
+      <input
+        type="text"
+        placeholder="Search tasks..."
+        className="w-full p-2 mb-3 border rounded-sm focus:outline-hidden focus:ring-2 focus:ring-blue-400"
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
       <input
         type="text"
         placeholder="Title"
@@ -165,14 +102,23 @@ const TodoApp: FC = () => {
           Add Task
         </button>
         <button
-          onClick={deleteAllTasks}
+          onClick={() => { setTasks([]); saveTasksToLocalStorage([]); }}
           className="flex-1 p-2 mb-3 bg-gray-500 text-white rounded-sm hover:bg-black ml-1"
         >
           Delete All
         </button>
       </div>
-      <ul className="list-none p-0 mt-5" ref={newItem}>
-        {renderTasks()}
+      <ul className="list-none p-0 mt-5">
+        {filteredTasks.map((task, index) => (
+          <li key={index} className="list-group-item">
+            <strong>Title:</strong> {task.title}<br />
+            <strong>Description:</strong> {task.description}<br />
+            <strong>Due Date:</strong> {task.dueDate}<br />
+            <strong>Timestamp:</strong> {task.timestamp}<br />
+            <button onClick={() => delTask(index)} className="text-red-500 ml-2">Delete</button>
+            <button onClick={() => updateTask(index)} className="text-blue-500 ml-2">Edit</button>
+          </li>
+        ))}
       </ul>
     </div>
   );
